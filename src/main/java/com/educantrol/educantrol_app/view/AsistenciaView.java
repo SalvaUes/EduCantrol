@@ -1,10 +1,10 @@
-package main.java.com.educantrol.educantrol_app.view;
+package com.educantrol.educantrol_app.view;
 
-import main.java.com.educantrol.educantrol_app.model.Asistencia;
-import main.java.com.educantrol.educantrol_app.model.Clase;
-import main.java.com.educantrol.educantrol_app.model.Estudiante;
+import com.educantrol.educantrol_app.model.Asistencia;
+import com.educantrol.educantrol_app.model.Clase;
+import com.educantrol.educantrol_app.model.Estudiante;
 
-import main.java.com.educantrol.educantrol_app.service.AsistenciaService;
+import com.educantrol.educantrol_app.service.AsistenciaService;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
