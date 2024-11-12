@@ -1,5 +1,6 @@
 package com.educantrol.educantrol_app.model;
 
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -7,8 +8,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-
-import java.time.LocalDate;
 
 @Entity
 public class Estudiante {
@@ -22,8 +21,6 @@ public class Estudiante {
     private String direccion;
     private String telefono;
     private String email;
-    @Lob
-    private byte[] foto;
 
     @OneToMany(mappedBy = "estudiante")
     private List<Asistencia> asistencias;
@@ -36,7 +33,8 @@ public class Estudiante {
 
     @OneToMany(mappedBy = "estudiante")
     private List<Inscripcion> inscripciones;
-    
+    @Lob
+    private byte[] foto;
 
     // Getters y Setters
     public Integer getIdEstudiante() {
