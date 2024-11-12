@@ -1,3 +1,7 @@
+package com.educantrol.educantrol_app.service;
+
+import com.educantrol.educantrol_app.model.Asistencia;
+import com.educantrol.educantrol_app.repository.Asistencia;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
