@@ -1,7 +1,7 @@
 package com.educantrol.educantrol_app.service;
 
 import com.educantrol.educantrol_app.model.ExpedienteAcademico;
-import com.educantrol.educantrol_app.repository.ExpedienteAcademicoService;
+import com.educantrol.educantrol_app.model.ExpedienteAcademicoRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

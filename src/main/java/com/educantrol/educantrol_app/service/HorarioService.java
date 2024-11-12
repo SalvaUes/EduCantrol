@@ -1,7 +1,8 @@
 package com.educantrol.educantrol_app.service;
 
 import com.educantrol.educantrol_app.model.Horario;
-import com.educantrol.educantrol_app.repository.HorarioRepository;
+import com.educantrol.educantrol_app.model.HorarioRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

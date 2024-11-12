@@ -1,7 +1,8 @@
 package com.educantrol.educantrol_app.service;
 
 import com.educantrol.educantrol_app.model.Profesor;
-import com.educantrol.educantrol_app.repository.ProfesorRepository;
+import com.educantrol.educantrol_app.model.ProfesorRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
