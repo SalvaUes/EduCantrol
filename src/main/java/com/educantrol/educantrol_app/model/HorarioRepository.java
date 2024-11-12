@@ -1,7 +1,7 @@
-package com.educantrol.educantrol_app.repository;
+package com.educantrol.educantrol_app.model;
 
-import com.educantrol.educantrol_app.model.Horario;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+@Repository
 public interface HorarioRepository extends JpaRepository<Horario, Long> {
 }
