@@ -29,6 +29,7 @@ public class Clase {
     @Column(length = 500)
     private String descripcion;
 
+    @Column
     private LocalDate fecha;
     
 

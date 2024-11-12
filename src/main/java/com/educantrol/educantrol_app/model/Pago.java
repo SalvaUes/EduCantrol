@@ -8,26 +8,37 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
+
+import java.time.LocalDate;
+
 @Entity
 public class Pago {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idPago;
+    private Long idPago;
 
     @ManyToOne
-    @JoinColumn(name = "idEstudiante")
+    @JoinColumn(name = "idEstudiante", nullable = false)
     private Estudiante estudiante;
 
+    @Column(nullable = false)
     private Double monto;
-    private Date fechaPago;
+
+    @Column
+    private LocalDate fechaPago;
+
+    @Column
     private String concepto;
 
-    // Getters y Setters
-    public Integer getIdPago() {
+    public Pago() {
+    }
+
+    public Long getIdPago() {
         return idPago;
     }
 
-    public void setIdPago(Integer idPago) {
+    public void setIdPago(Long idPago) {
         this.idPago = idPago;
     }
 
@@ -43,15 +54,15 @@ public class Pago {
         return monto;
     }
 
-    public void setMonto(Double monto) {
-        this.monto = monto;
+    public void setMonto(Double montoDouble) {
+        this.monto = montoDouble;
     }
 
-    public Date getFechaPago() {
+    public LocalDate getFechaPago() {
         return fechaPago;
     }
 
-    public void setFechaPago(Date fechaPago) {
+    public void setFechaPago(LocalDate fechaPago) {
         this.fechaPago = fechaPago;
     }
 
