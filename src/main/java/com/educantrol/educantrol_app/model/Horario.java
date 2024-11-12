@@ -1,5 +1,6 @@
 package com.educantrol.educantrol_app.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,26 +12,26 @@ public class Horario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long idHorario;
+
+    @Column(name = "dia_semana", nullable = false, length = 10)
     private String diaSemana;
+
+    @Column(name = "hora_inicio", nullable = false)
     private LocalTime horaInicio;
+
+    @Column(name = "hora_fin", nullable = false)
     private LocalTime horaFin;
 
-    public Horario() { }
-
-    public Horario(String diaSemana, LocalTime horaInicio, LocalTime horaFin) {
-        this.diaSemana = diaSemana;
-        this.horaInicio = horaInicio;
-        this.horaFin = horaFin;
+    public Horario() {
     }
 
-    // Getters y Setters
-    public Long getId() {
-        return id;
+    public Long getIdHorario() {
+        return idHorario;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setIdHorario(Long idHorario) {
+        this.idHorario = idHorario;
     }
 
     public String getDiaSemana() {
@@ -57,4 +58,3 @@ public class Horario {
         this.horaFin = horaFin;
     }
 }
-

@@ -1,4 +1,5 @@
 package com.educantrol.educantrol_app.model;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -7,61 +8,63 @@ import jakarta.persistence.Id;
 
 @Entity
 public class Profesor {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idProfesor;
 
-@Id 
-@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, length = 50)
+    private String nombre;
 
-@Column
-private Long id;
-@Column
-private String nombre;
-@Column
-private String apellido;
-@Column
-private String especialidad;
-@Column
-private String email;
+    @Column(nullable = false, length = 50)
+    private String apellido;
 
+    @Column(length = 100)
+    private String especialidad;
 
-// getters y setters
-public Long getId(){
-    return id;
-}
+    @Column(length = 100)
+    private String email;
 
-public void setId(long id) {
-    this.id = id;
-}
+    public Profesor() {
+    }
 
-public String getNombre(){
-    return nombre;
-}
-public void setNombre(String nombre){
-this.nombre = nombre;
-}
+    public Long getIdProfesor() {
+        return idProfesor;
+    }
 
-public String getApellido() {
-    return apellido;
-}
+    public void setIdProfesor(Long idProfesor) {
+        this.idProfesor = idProfesor;
+    }
 
-public void setApellido(String apellido) {
-    this.apellido = apellido;
-}
+    public String getNombre() {
+        return nombre;
+    }
 
-public String getEspecialidad() {
-    return especialidad;
-}
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
-public void setEspecialidad(String especialidad) {
-    this.especialidad = especialidad;
-}
+    public String getApellido() {
+        return apellido;
+    }
 
-public String getEmail() {
-    return email;
-}
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
 
-public void setEmail(String email) {
-    this.email = email;
-}
+    public String getEspecialidad() {
+        return especialidad;
+    }
 
+    public void setEspecialidad(String especialidad) {
+        this.especialidad = especialidad;
+    }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }
