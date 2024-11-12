@@ -1,6 +1,7 @@
-package main.java.com.educantrol.educantrol_app.model;
+package com.educantrol.educantrol_app.model;
 
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
@@ -9,7 +10,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 
-import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
@@ -27,7 +27,9 @@ public class Asistencia {
     @JoinColumn(name = "idEstudiante", nullable = false)
     private Estudiante estudiante;
 
+    @Column
     private LocalDate fecha;
+    @Column
     private Boolean presente;
 
 
