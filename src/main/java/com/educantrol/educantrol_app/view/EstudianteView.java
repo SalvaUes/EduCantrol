@@ -1,4 +1,5 @@
 package com.educantrol.educantrol_app.view;
+
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
@@ -7,8 +8,8 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.educantrol.models.Estudiante;
-import com.educantrol.services.EstudianteService;
+import com.educantrol.educantrol_app.model.Estudiante;
+import com.educantrol.educantrol_app.service.EstudianteService;
 
 @Route("estudiantes") // Define la URL de la vista
 public class EstudianteView extends VerticalLayout {
@@ -84,7 +85,7 @@ public class EstudianteView extends VerticalLayout {
 
     private void eliminarEstudiante() {
         if (estudianteSeleccionado != null) {
-            estudianteService.deleteById(estudianteSeleccionado.getIdEstudiante());
+            estudianteService.deleteById(estudianteSeleccionado.getId_estudiante());
             Notification.show("Estudiante eliminado");
             actualizarLista();
             editarEstudiante(null);

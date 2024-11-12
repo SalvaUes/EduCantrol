@@ -8,41 +8,42 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.time.LocalDate;
 
 @Entity
 public class Estudiante {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idEstudiante;
+    private Long id_estudiante;
 
+    @Column(nullable = false, length = 50)
     private String nombre;
+
+    @Column(nullable = false, length = 50)
     private String apellido;
-    private Date fechaNacimiento;
+
+    @Column
+    private LocalDate fecha_nacimiento;
+
+    @Column(length = 100)
     private String direccion;
+
+    @Column(length = 15)
     private String telefono;
+
+    @Column(length = 100)
     private String email;
 
-    @OneToMany(mappedBy = "estudiante")
-    private List<Asistencia> asistencias;
-
-    @OneToMany(mappedBy = "estudiante")
-    private List<Pago> pagos;
-
-    @OneToMany(mappedBy = "estudiante")
-    private List<ExpedienteAcademico> expedientes;
-
-    @OneToMany(mappedBy = "estudiante")
-    private List<Inscripcion> inscripciones;
-    @Lob
-    private byte[] foto;
-
-    // Getters y Setters
-    public Integer getIdEstudiante() {
-        return idEstudiante;
+    public Estudiante() {
     }
 
-    public void setIdEstudiante(Integer idEstudiante) {
-        this.idEstudiante = idEstudiante;
+    public Long getId_estudiante() {
+        return id_estudiante;
+    }
+
+    public void setId_estudiante(Long id_estudiante) {
+        this.id_estudiante = id_estudiante;
     }
 
     public String getNombre() {
@@ -61,12 +62,12 @@ public class Estudiante {
         this.apellido = apellido;
     }
 
-    public Date getFechaNacimiento() {
-        return fechaNacimiento;
+    public LocalDate getFecha_nacimiento() {
+        return fecha_nacimiento;
     }
 
-    public void setFechaNacimiento(Date fechaNacimiento) {
-        this.fechaNacimiento = fechaNacimiento;
+    public void setFecha_nacimiento(LocalDate fecha_nacimiento) {
+        this.fecha_nacimiento = fecha_nacimiento;
     }
 
     public String getDireccion() {

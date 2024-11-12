@@ -1,106 +1,78 @@
 package com.educantrol.educantrol_app.view;
+
+
+import com.educantrol.educantrol_app.model.Pago;
+import com.educantrol.educantrol_app.model.Estudiante;
+import com.educantrol.educantrol_app.service.PagoService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.BigDecimalField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.router.Route;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.educantrol.models.Pago;
-import com.educantrol.services.PagoService;
 
-import java.util.List;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
-@Route("pagos") // URL path for this view
+@Route("pago")
 public class PagoView extends VerticalLayout {
 
     private final PagoService pagoService;
-    private final Grid<Pago> grid = new Grid<>(Pago.class);
+    private final Grid<Pago> pagoGrid;
+    private final BigDecimalField montoField;
+    private final DatePicker fechaPagoField;
+    private final TextField conceptoField;
+    private final TextField estudianteField;
 
-    private TextField estudianteId = new TextField("ID Estudiante");
-    private TextField monto = new TextField("Monto");
-    private TextField fechaPago = new TextField("Fecha de Pago (YYYY-MM-DD)");
-    private TextField concepto = new TextField("Concepto");
-    private Button saveButton = new Button("Guardar");
-    private Button deleteButton = new Button("Eliminar");
-
-    private Pago pagoSeleccionado;
-
-    @Autowired
     public PagoView(PagoService pagoService) {
         this.pagoService = pagoService;
 
-        // Configure the grid
-        grid.setColumns("idPago", "estudiante.idEstudiante", "monto", "fechaPago", "concepto");
-        grid.getColumnByKey("estudiante.idEstudiante").setHeader("ID Estudiante");
-        grid.setItems(pagoService.findAll());
-        grid.asSingleSelect().addValueChangeListener(event -> editarPago(event.getValue()));
+        pagoGrid = new Grid<>(Pago.class);
+        pagoGrid.setColumns("idPago", "estudiante.nombre", "monto", "fechaPago", "concepto");
+        pagoGrid.setItems(pagoService.findAll());
 
-        // Configure buttons
-        saveButton.addClickListener(e -> guardarPago());
-        deleteButton.addClickListener(e -> eliminarPago());
+        montoField = new BigDecimalField("Monto");
+        montoField.setPlaceholder("Ingrese el monto");
+        fechaPagoField = new DatePicker("Fecha de Pago");
+        fechaPagoField.setValue(LocalDate.now());
+        conceptoField = new TextField("Concepto");
+        estudianteField = new TextField("ID Estudiante");
 
-        // Form layout
-        HorizontalLayout formLayout = new HorizontalLayout(estudianteId, monto, fechaPago, concepto, saveButton, deleteButton);
+        Button addButton = new Button("Agregar Pago", event -> agregarPago());
 
-        // Add components to the view
-        add(formLayout, grid);
-
-        actualizarLista();
+        add(pagoGrid, montoField, fechaPagoField, conceptoField, estudianteField, addButton);
+        setAlignItems(Alignment.START);
     }
 
-    private void actualizarLista() {
-        List<Pago> pagos = pagoService.findAll();
-        grid.setItems(pagos);
-    }
-
-    private void editarPago(Pago pago) {
-        if (pago != null) {
-            pagoSeleccionado = pago;
-            estudianteId.setValue(pago.getEstudiante() != null ? pago.getEstudiante().getIdEstudiante().toString() : "");
-            monto.setValue(pago.getMonto().toString());
-            fechaPago.setValue(pago.getFechaPago() != null ? pago.getFechaPago().toString() : "");
-            concepto.setValue(pago.getConcepto());
-        } else {
-            pagoSeleccionado = null;
-            estudianteId.clear();
-            monto.clear();
-            fechaPago.clear();
-            concepto.clear();
-        }
-    }
-
-    private void guardarPago() {
-        if (pagoSeleccionado == null) {
-            pagoSeleccionado = new Pago();
-        }
+    private void agregarPago() {
+        
+        LocalDate fechaPago = fechaPagoField.getValue();
+        String concepto = conceptoField.getValue();
+        Long idEstudiante;
         try {
-            Integer estudianteIdInt = Integer.parseInt(estudianteId.getValue());
-            Double montoDouble = Double.parseDouble(monto.getValue());
-            
-            pagoSeleccionado.setEstudiante(pagoService.findEstudianteById(estudianteIdInt)); // assuming pagoService has a method to fetch Estudiante by ID
-            pagoSeleccionado.setMonto(montoDouble);
-            pagoSeleccionado.setFechaPago(java.sql.Date.valueOf(fechaPago.getValue())); // assumes valid date format YYYY-MM-DD
-            pagoSeleccionado.setConcepto(concepto.getValue());
-
-            pagoService.save(pagoSeleccionado);
-            Notification.show("Pago guardado");
-            actualizarLista();
-            editarPago(null);
-        } catch (Exception e) {
-            Notification.show("Error al guardar el pago: " + e.getMessage(), 3000, Notification.Position.MIDDLE);
+            idEstudiante = Long.parseLong(estudianteField.getValue());
+        } catch (NumberFormatException e) {
+            Notification.show("ID de estudiante no válido", 3000, Notification.Position.MIDDLE);
+            return;
         }
-    }
 
-    private void eliminarPago() {
-        if (pagoSeleccionado != null) {
-            pagoService.deleteById(pagoSeleccionado.getIdPago());
-            Notification.show("Pago eliminado");
-            actualizarLista();
-            editarPago(null);
-        } else {
-            Notification.show("Seleccione un pago para eliminar");
-        }
+        Estudiante estudiante = new Estudiante(); 
+        estudiante.setId_estudiante(idEstudiante);
+
+        Pago nuevoPago = new Pago();
+        
+        nuevoPago.setFechaPago(fechaPago);
+        nuevoPago.setConcepto(concepto);
+        nuevoPago.setEstudiante(estudiante);
+
+        pagoService.save(nuevoPago);
+        pagoGrid.setItems(pagoService.findAll());
+
+        montoField.clear();
+        fechaPagoField.clear();
+        conceptoField.clear();
+        estudianteField.clear();
     }
 }

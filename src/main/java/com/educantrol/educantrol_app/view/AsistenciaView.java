@@ -1,118 +1,117 @@
 package com.educantrol.educantrol_app.view;
 
+
+
 import com.educantrol.educantrol_app.model.Asistencia;
-import com.educantrol.educantrol_app.model.Clase;
-import com.educantrol.educantrol_app.model.Estudiante;
-
 import com.educantrol.educantrol_app.service.AsistenciaService;
-
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.router.Route;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Optional;
 
 @Route("asistencias")
 public class AsistenciaView extends VerticalLayout {
 
     private final AsistenciaService asistenciaService;
-    private final Grid<Asistencia> grid = new Grid<>(Asistencia.class);
 
-    // Campos de formulario
-    private TextField estudianteField = new TextField("ID Estudiante");
-    private TextField claseField = new TextField("ID Clase");
-    private DatePicker fechaField = new DatePicker("Fecha");
+    private Grid<Asistencia> grid = new Grid<>(Asistencia.class);
+    private DatePicker fechaField = new DatePicker("Fecha");  // Cambiado a DatePicker
     private TextField presenteField = new TextField("Presente (true/false)");
 
-    private Button addButton = new Button("Añadir Asistencia");
-    private Button updateButton = new Button("Actualizar Asistencia");
-    private Button deleteButton = new Button("Eliminar Asistencia");
+    private Button saveButton = new Button("Guardar");
+    private Button deleteButton = new Button("Eliminar");
 
-    @Autowired
+    private Asistencia asistenciaSeleccionada;
+
     public AsistenciaView(AsistenciaService asistenciaService) {
         this.asistenciaService = asistenciaService;
+        
+        setSizeFull();
+        configureGrid();
+        configureForm();
 
-        configurarVista();
-        configurarEventos();
-        actualizarGrid();
+        add(getContent());
+
+        updateList();
     }
 
-    private void configurarVista() {
-        add(estudianteField, claseField, fechaField, presenteField, addButton, updateButton, deleteButton, grid);
-        grid.setColumns("idAsistencia", "estudiante.idEstudiante", "clase.idClase", "fecha", "presente");
-        grid.setSizeFull();
+    private void configureGrid() {
+        grid.setColumns("idAsistencia", "clase", "estudiante", "fecha", "presente");
+        grid.asSingleSelect().addValueChangeListener(event -> editAsistencia(event.getValue()));
     }
 
-    private void configurarEventos() {
-        addButton.addClickListener(e -> agregarAsistencia());
-        updateButton.addClickListener(e -> actualizarAsistencia());
-        deleteButton.addClickListener(e -> eliminarAsistencia());
-        grid.asSingleSelect().addValueChangeListener(e -> cargarDatosFormulario(e.getValue()));
+    private HorizontalLayout getContent() {
+        HorizontalLayout content = new HorizontalLayout(grid, getFormLayout());
+        content.setSizeFull();
+        return content;
     }
 
-    private void agregarAsistencia() {
-        try {
-            Asistencia asistencia = new Asistencia();
-            asistencia.setEstudiante(new Estudiante(Long.parseLong(estudianteField.getValue())));
-            asistencia.setClase(new Clase(Long.parseLong(claseField.getValue())));
-            asistencia.setFecha(fechaField.getValue());
-            asistencia.setPresente(Boolean.parseBoolean(presenteField.getValue()));
-            
-            asistenciaService.guardarAsistencia(asistencia);
-            actualizarGrid();
-            Notification.show("Asistencia añadida con éxito.");
-        } catch (Exception ex) {
-            Notification.show("Error al añadir asistencia: " + ex.getMessage());
+    private VerticalLayout getFormLayout() {
+        VerticalLayout formLayout = new VerticalLayout(fechaField, presenteField, createButtonsLayout());
+        formLayout.setSpacing(false);
+        return formLayout;
+    }
+
+    private HorizontalLayout createButtonsLayout() {
+        saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+
+        saveButton.addClickListener(e -> saveAsistencia());
+        deleteButton.addClickListener(e -> deleteAsistencia());
+
+        return new HorizontalLayout(saveButton, deleteButton);
+    }
+
+    private void configureForm() {
+        fechaField.setPlaceholder("Selecciona una fecha");  // Mensaje más claro
+    }
+
+    private void saveAsistencia() {
+        if (asistenciaSeleccionada == null) {
+            asistenciaSeleccionada = new Asistencia();
+        }
+
+        // Asignar los valores del formulario a la asistencia seleccionada
+        asistenciaSeleccionada.setFecha(fechaField.getValue());
+        asistenciaSeleccionada.setPresente(Boolean.parseBoolean(presenteField.getValue()));
+
+        asistenciaService.save(asistenciaSeleccionada);
+        updateList();
+        Notification.show("Asistencia guardada");
+        clearForm();
+    }
+
+    private void deleteAsistencia() {
+        if (asistenciaSeleccionada != null) {
+            asistenciaService.delete(asistenciaSeleccionada);
+            updateList();
+            Notification.show("Asistencia eliminada");
+            clearForm();
         }
     }
 
-    private void actualizarAsistencia() {
-        try {
-            Optional<Asistencia> optionalAsistencia = grid.asSingleSelect().getValue();
-            if (optionalAsistencia.isPresent()) {
-                Asistencia asistencia = optionalAsistencia.get();
-                asistencia.setFecha(fechaField.getValue());
-                asistencia.setPresente(Boolean.parseBoolean(presenteField.getValue()));
-                asistenciaService.guardarAsistencia(asistencia);
-                actualizarGrid();
-                Notification.show("Asistencia actualizada con éxito.");
-            }
-        } catch (Exception ex) {
-            Notification.show("Error al actualizar asistencia: " + ex.getMessage());
-        }
-    }
-
-    private void eliminarAsistencia() {
-        Optional<Asistencia> optionalAsistencia = grid.asSingleSelect().getValue();
-        if (optionalAsistencia.isPresent()) {
-            asistenciaService.eliminarAsistencia(optionalAsistencia.get().getIdAsistencia());
-            actualizarGrid();
-            Notification.show("Asistencia eliminada con éxito.");
+    private void editAsistencia(Asistencia asistencia) {
+        if (asistencia == null) {
+            clearForm();
         } else {
-            Notification.show("Seleccione una asistencia para eliminar.");
-        }
-    }
-
-    private void cargarDatosFormulario(Asistencia asistencia) {
-        if (asistencia != null) {
-            estudianteField.setValue(asistencia.getEstudiante().getIdEstudiante().toString());
-            claseField.setValue(asistencia.getClase().getIdClase().toString());
+            asistenciaSeleccionada = asistencia;
             fechaField.setValue(asistencia.getFecha());
-            presenteField.setValue(asistencia.getPresente().toString());
-        } else {
-            estudianteField.clear();
-            claseField.clear();
-            fechaField.clear();
-            presenteField.clear();
+            presenteField.setValue(asistencia.getPresente() != null ? asistencia.getPresente().toString() : "");
         }
     }
 
-    private void actualizarGrid() {
-        grid.setItems(asistenciaService.obtenerAsistencias());
+    private void clearForm() {
+        asistenciaSeleccionada = null;
+        fechaField.clear();
+        presenteField.clear();
+    }
+
+    private void updateList() {
+        grid.setItems(asistenciaService.findAll());
     }
 }

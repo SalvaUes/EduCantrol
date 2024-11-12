@@ -4,7 +4,7 @@ package com.educantrol.educantrol_app.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.educantrol.educantrol_app.model.Clase;
-import com.educantrol.educantrol_app.repository.ClaseRepository;
+import com.educantrol.educantrol_app.model.ClaseRepository;
 
 import java.util.List;
 import java.util.Optional;
