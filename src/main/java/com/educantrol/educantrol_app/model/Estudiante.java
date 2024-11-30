@@ -6,8 +6,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Lob;
+
 import java.time.LocalDate;
 
 @Entity
@@ -15,7 +15,7 @@ public class Estudiante {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_estudiante;
+    private Long idEstudiante;
 
     @Column(nullable = false, length = 50)
     private String nombre;
@@ -35,15 +35,19 @@ public class Estudiante {
     @Column(length = 100)
     private String email;
 
+    @Column(name = "foto")
+    @Lob
+    private byte[] foto;
+
     public Estudiante() {
     }
 
-    public Long getId_estudiante() {
-        return id_estudiante;
+    public Long getidEstudiante() {
+        return idEstudiante;
     }
 
-    public void setId_estudiante(Long id_estudiante) {
-        this.id_estudiante = id_estudiante;
+    public void setidEstudiante(Long idEstudiante) {
+        this.idEstudiante = idEstudiante;
     }
 
     public String getNombre() {
@@ -92,5 +96,13 @@ public class Estudiante {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public byte[] getFoto() {
+        return foto;
+    }
+
+    public void setFoto(byte[] foto) {
+        this.foto = foto;
     }
 }

@@ -1,0 +1,21 @@
+/* styles.css */
+:host(.v-app-layout) [part="navbar"] {
+    background-color: #007BFF; /* Azul Vaadin */
+    color: white;
+}
+
+:host(.v-app-layout) [part="drawer"] {
+    background-color: #F8F9FA; /* Gris claro */
+}
+
+a {
+    color: black;
+    text-decoration: none;
+    padding: 10px;
+    display: block;
+}
+
+a:hover {
+    background-color: #E9ECEF;
+    color: #007BFF;
+}
