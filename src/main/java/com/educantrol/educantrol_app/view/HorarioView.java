@@ -2,16 +2,17 @@ package com.educantrol.educantrol_app.view;
 
 import com.educantrol.educantrol_app.model.Horario;
 import com.educantrol.educantrol_app.model.Periodo;
+import com.educantrol.educantrol_app.model.PeriodoRepository;
 import com.educantrol.educantrol_app.service.HorarioService;
 import com.educantrol.educantrol_app.service.PeriodoService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.datepicker.TimePicker; //Pack para la seleccion de horas
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
@@ -58,10 +59,10 @@ public class HorarioView extends VerticalLayout {
         FormLayout formLayout = new FormLayout();
 
         TextField diaSemanaField = new TextField("Día de la Semana");
-        TimePicker horaInicioField = new TimePicker("Hora Inicio");
-        TimePicker horaFinField = new TimePicker("Hora Fin");
+        com.vaadin.flow.component.timepicker.TimePicker horaInicioField = new com.vaadin.flow.component.timepicker.TimePicker("Hora Inicio");
+        com.vaadin.flow.component.timepicker.TimePicker horaFinField = new com.vaadin.flow.component.timepicker.TimePicker("Hora Fin");
         ComboBox<Periodo> periodoComboBox = new ComboBox<>("Período"); //para seleccionar el periodo
-        periodoComboBox.setItems(periodoService.findAll());
+        periodoComboBox.setItems(periodoRepository.findAll());
         periodoComboBox.setItemLabelGenerator(Periodo::getNombre);
 
         if (horario != null) {
