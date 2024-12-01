@@ -56,8 +56,11 @@ public class MainLayout extends AppLayout {
         RouterLink profesoresLink = new RouterLink("Profesores", ProfesorView.class);
         profesoresLink.getStyle().set("padding", "10px").set("display", "block");
 
+        RouterLink materiasLink = new RouterLink("Materias", MateriaView.class);
+        materiasLink.getStyle().set("padding", "10px").set("display", "block");
+
         // Contenedor de navegación
-        VerticalLayout nav = new VerticalLayout(estudiantesLink, profesoresLink);
+        VerticalLayout nav = new VerticalLayout(estudiantesLink, profesoresLink, materiasLink);
         nav.setSpacing(false);
         nav.setPadding(true);
         nav.setWidthFull();
