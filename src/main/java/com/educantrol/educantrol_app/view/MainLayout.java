@@ -29,6 +29,7 @@ public class MainLayout extends AppLayout {
         createDrawer();
     }
 
+
     private void createHeader() {
         H1 logo = new H1("Sistema EduControl");
         logo.addClassNames("text-l", "m-m");
@@ -49,23 +50,18 @@ public class MainLayout extends AppLayout {
 
 
     private void createDrawer() {
-        // Crear enlaces del menú con íconos opcionales
         RouterLink estudiantesLink = new RouterLink("Estudiantes", EstudianteView.class);
-        estudiantesLink.getStyle().set("padding", "10px").set("display", "block");
-
         RouterLink profesoresLink = new RouterLink("Profesores", ProfesorView.class);
-        profesoresLink.getStyle().set("padding", "10px").set("display", "block");
-
-        RouterLink materiasLink = new RouterLink("Materias", MateriaView.class);
-        materiasLink.getStyle().set("padding", "10px").set("display", "block");
-
-        // Contenedor de navegación
-        VerticalLayout nav = new VerticalLayout(estudiantesLink, profesoresLink, materiasLink);
+        RouterLink periodosLink = new RouterLink("Períodos", PeriodoView.class);
+        RouterLink horariosLink = new RouterLink("Horarios", HorarioView.class);
+    
+        VerticalLayout nav = new VerticalLayout(estudiantesLink, profesoresLink, periodosLink, horariosLink);
         nav.setSpacing(false);
         nav.setPadding(true);
         nav.setWidthFull();
         nav.getStyle().set("background-color", "#F8F9FA").set("font-size", "16px");
-
+    
         addToDrawer(nav);
     }
+    
 }
