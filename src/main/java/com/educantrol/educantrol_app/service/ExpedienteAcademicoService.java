@@ -34,5 +34,5 @@ public class ExpedienteAcademicoService {
         expedienteRepository.deleteById(id);
     }
 
-    // Métodos adicionales de negocio si son necesarios
+
 }

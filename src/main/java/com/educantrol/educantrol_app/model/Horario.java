@@ -1,10 +1,6 @@
 package com.educantrol.educantrol_app.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import java.time.LocalTime;
 
 @Entity
@@ -23,8 +19,12 @@ public class Horario {
     @Column(name = "hora_fin", nullable = false)
     private LocalTime horaFin;
 
-    public Horario() {
-    }
+    @ManyToOne
+    @JoinColumn(name = "idPeriodo", nullable = false)
+    private Periodo periodo;
+
+    public Horario() {}
+
 
     public Long getIdHorario() {
         return idHorario;
@@ -56,5 +56,13 @@ public class Horario {
 
     public void setHoraFin(LocalTime horaFin) {
         this.horaFin = horaFin;
+    }
+
+    public Periodo getPeriodo() {
+        return periodo;
+    }
+
+    public void setPeriodo(Periodo periodo) {
+        this.periodo = periodo;
     }
 }
