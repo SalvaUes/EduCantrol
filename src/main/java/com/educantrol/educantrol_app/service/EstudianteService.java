@@ -52,6 +52,14 @@ public class EstudianteService {
         estudianteRepository.deleteById(idEstudiante);
     }
 
+    public List<Estudiante> findEstudianteNoAsociadosAlGrupo(long idGrupo) {
+        return estudianteRepository.findEstudiantesNoAsociadosAlGrupo(idGrupo);
+    }
+    public List<Estudiante> findEstudianteAsociadosAlGrupo(long idGrupo) {
+        return estudianteRepository.findEstudiantesAsociadosAlGrupo(idGrupo);
+    }
+
+
 
 
 }

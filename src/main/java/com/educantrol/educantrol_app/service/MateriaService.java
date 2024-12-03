@@ -1,5 +1,6 @@
 package com.educantrol.educantrol_app.service;
 
+import com.educantrol.educantrol_app.model.Profesor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -14,7 +15,7 @@ public class MateriaService {
     private MateriaRepository materiaRepository;
 
     // Método para obtener todos las materias
-    public List<Materia> obtenerTodosLasMaterias() {
+    public List<Materia> findAll() {
         return materiaRepository.findAll();
     }
 
@@ -24,12 +25,12 @@ public class MateriaService {
     }
 
     // Método para crear o actualizar un materia
-    public Materia guardarMateria(Materia materia) {
+    public Materia save(Materia materia) {
         return materiaRepository.save(materia);
     }
 
     // Método para eliminar un materia por su ID
-    public void eliminarCurso(Long id) {
+    public void deleteById(Long id) {
         materiaRepository.deleteById(id);
     }
 

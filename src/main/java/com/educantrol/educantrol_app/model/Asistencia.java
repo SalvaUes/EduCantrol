@@ -1,79 +1,57 @@
 package com.educantrol.educantrol_app.model;
 
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-
-
-import java.time.LocalDate;
+import jakarta.persistence.*;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Asistencia {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idAsistencia;
+    private int idAsistencia;
 
     @ManyToOne
-    @JoinColumn(name = "idClase", nullable = false)
-    private Clase clase;
+    @JoinColumn(name = "id_grupo", nullable = false)
+    private Grupo grupo;
 
-    @ManyToOne
-    @JoinColumn(name = "idEstudiante", nullable = false)
-    private Estudiante estudiante;
+    @Temporal(TemporalType.DATE)
+    private Date fecha;
 
-    @Column
-    private LocalDate fecha;
-    @Column
-    private Boolean presente;
+    @OneToMany(mappedBy = "asistencia", cascade = CascadeType.ALL)
+    private List<DetalleAsistencia> detalles;
 
-
-    public Asistencia() {
-        
-    }
-
-    public Long getIdAsistencia() {
+    // Getters y Setters
+    public int getIdAsistencia() {
         return idAsistencia;
     }
 
-    public void setIdAsistencia(Long idAsistencia) {
+    public void setIdAsistencia(int idAsistencia) {
         this.idAsistencia = idAsistencia;
     }
 
-    public Clase getClase() {
-        return clase;
+    public Grupo getGrupo() {
+        return grupo;
     }
 
-    public void setClase(Clase clase) {
-        this.clase = clase;
+    public void setGrupo(Grupo grupo) {
+        this.grupo = grupo;
     }
 
-    public Estudiante getEstudiante() {
-        return estudiante;
-    }
-
-    public void setEstudiante(Estudiante estudiante) {
-        this.estudiante = estudiante;
-    }
-
-    public LocalDate getFecha() {
+    public Date getFecha() {
         return fecha;
     }
 
-    public void setFecha(LocalDate fecha) {
+    public void setFecha(Date fecha) {
         this.fecha = fecha;
     }
 
-    public Boolean getPresente() {
-        return presente;
+    public List<DetalleAsistencia> getDetalles() {
+        return detalles;
     }
 
-    public void setPresente(Boolean presente) {
-        this.presente = presente;
+    public void setDetalles(List<DetalleAsistencia> detalles) {
+        this.detalles = detalles;
     }
 }
+

@@ -9,6 +9,7 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.Column;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
@@ -58,7 +59,7 @@ public class EstudianteView extends VerticalLayout {
         configurarGrid();
 
         // Agregar componentes al layout principal
-        add(formLayout, grid);
+        add(new H3("Gestión de Estudiantes"),formLayout, grid);
 
         // Inicializar lista de estudiantes
         actualizarLista();

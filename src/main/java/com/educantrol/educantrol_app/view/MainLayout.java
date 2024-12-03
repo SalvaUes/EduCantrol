@@ -52,10 +52,13 @@ public class MainLayout extends AppLayout {
     private void createDrawer() {
         RouterLink estudiantesLink = new RouterLink("Estudiantes", EstudianteView.class);
         RouterLink profesoresLink = new RouterLink("Profesores", ProfesorView.class);
+        RouterLink materiasLink = new RouterLink("Materias", MateriaView.class);
         RouterLink periodosLink = new RouterLink("Períodos", PeriodoView.class);
         RouterLink horariosLink = new RouterLink("Horarios", HorarioView.class);
+        RouterLink gruposLink = new RouterLink("Grupos", GrupoView.class);
+        RouterLink asistenciaLink = new RouterLink("Asistencia", AsistenciaView.class);
     
-        VerticalLayout nav = new VerticalLayout(estudiantesLink, profesoresLink, periodosLink, horariosLink);
+        VerticalLayout nav = new VerticalLayout(estudiantesLink, profesoresLink,materiasLink, periodosLink, horariosLink, gruposLink, asistenciaLink);
         nav.setSpacing(false);
         nav.setPadding(true);
         nav.setWidthFull();

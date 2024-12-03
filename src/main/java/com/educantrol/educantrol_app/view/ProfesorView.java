@@ -6,11 +6,13 @@ import com.educantrol.educantrol_app.service.ProfesorService;
 import com.educantrol.educantrol_app.utils.ProfesorImporter;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.html.Label;
 
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
@@ -55,34 +57,12 @@ public class ProfesorView extends VerticalLayout {
         configurarGrid();
 
         // Agregar componentes al layout principal
-        add(formLayout, grid);
+        add(new H3("Gestión de Profesores"),formLayout, grid);
 
         // Inicializar lista de profesores
         actualizarLista();
 
-       MemoryBuffer buffer = new MemoryBuffer();
-        Upload upload = new Upload(buffer);
-        upload.setAcceptedFileTypes(".xlsx"); // Solo aceptar archivos Excel
 
-        upload.addSucceededListener(event -> {
-            try (InputStream inputStream = buffer.getInputStream()) {
-                // Procesar el archivo Excel
-                ProfesorImporter importer = new ProfesorImporter();
-                List<Profesor> profesores = importer.importarProfesores(inputStream);
-
-                // Guardar en la base de datos
-                for (Profesor profesor : profesores) {
-                    profesorService.save(profesor);
-                }
-
-                Notification.show("Archivo importado correctamente.");
-            } catch (Exception e) {
-                Notification.show("Error al procesar el archivo: " + e.getMessage());
-            }
-        });
-
-        // Añadir el componente Upload a la vista
-        add(new Button("Importar Profesores"), upload);
     }
 
     private HorizontalLayout configurarFormulario() {
@@ -118,8 +98,34 @@ public class ProfesorView extends VerticalLayout {
                 .set("color", "white")
                 .set("border-radius", "8px");
 
+        MemoryBuffer buffer = new MemoryBuffer();
+        Upload upload = new Upload(buffer);
+        upload.setAcceptedFileTypes(".xlsx"); // Solo aceptar archivos Excel
+        Label label = new Label("Importar Profesores:");
+
+        upload.addSucceededListener(event -> {
+            try (InputStream inputStream = buffer.getInputStream()) {
+                // Procesar el archivo Excel
+                ProfesorImporter importer = new ProfesorImporter();
+                List<Profesor> profesores = importer.importarProfesores(inputStream);
+
+                // Guardar en la base de datos
+                for (Profesor profesor : profesores) {
+                    profesorService.save(profesor);
+                }
+
+
+                NotificationUtil.showSuccess("Archivo importado correctamente.");
+            } catch (Exception e) {
+                NotificationUtil.showError("Error al procesar el archivo: " + e.getMessage());
+            }
+        });
+
+        // Añadir el componente Upload a la vista
+       // add(new Button("Importar Profesores"), upload );
+
         // Controles horizontales en una sola línea
-        HorizontalLayout formLayout = new HorizontalLayout(nombre, apellido,email, especialidad, saveButton, cancelButton);
+        HorizontalLayout formLayout = new HorizontalLayout(nombre, apellido,email, especialidad, saveButton, cancelButton, label, upload);
         formLayout.setSpacing(true);
         formLayout.setPadding(true);
         formLayout.setWidthFull();
