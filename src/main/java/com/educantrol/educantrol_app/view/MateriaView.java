@@ -5,6 +5,7 @@ import com.educantrol.educantrol_app.model.Materia;
 import com.educantrol.educantrol_app.model.MateriaRepository;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -43,6 +44,8 @@ public class MateriaView extends VerticalLayout {
         configurarGrid();
 
         add(formLayout, grid);
+
+        add(new H3("Gestión de materias"),formLayout, grid);
 
         actualizarLista();// Agregar componentes al
     }

@@ -299,9 +299,9 @@ public class GrupoView extends VerticalLayout {
         grupoSeleccionado.setMateria(materiaComboBox.getValue());
         grupoSeleccionado.setHorario(horarioComboBox.getValue());
         grupoSeleccionado.setProfesor(profesorComboBox.getValue());
+        grupoSeleccionado.setDescripcion(descripcion.getValue());
 
         grupoService.save(grupoSeleccionado);
-
         Notification.show("Grupo guardado exitosamente");
 
         limpiarFormulario();
