@@ -3,6 +3,7 @@ package com.educantrol.educantrol_app.view;
 import com.educantrol.educantrol_app.model.Periodo;
 import com.educantrol.educantrol_app.model.PeriodoRepository;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.notification.Notification;
@@ -10,7 +11,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.converter.StringToIntegerConverter;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,6 +21,8 @@ public class PeriodoView extends VerticalLayout {
     private final Grid<Periodo> grid = new Grid<>(Periodo.class);
     private final TextField nombre = new TextField("Nombre");
     private final TextField descripcion = new TextField("Descripción");
+    private final DatePicker fechaInicio = new DatePicker("Fecha de Inicio");
+    private final DatePicker fechaFin = new DatePicker("Fecha de Fin");
     private final Button saveButton = new Button("Guardar");
     private final Button cancelButton = new Button("Cancelar");
 
@@ -41,9 +43,7 @@ public class PeriodoView extends VerticalLayout {
         // Configurar Grid
         configurarGrid();
 
-        add(formLayout, grid);
-
-        add(new H3("Gestión de periodos"),formLayout, grid);
+        add(new H3("Gestión de periodos"), formLayout, grid);
 
         actualizarLista(); // Actualiza la lista de periodos
     }
@@ -55,26 +55,23 @@ public class PeriodoView extends VerticalLayout {
                 .bind(Periodo::getNombre, Periodo::setNombre);
 
         binder.forField(descripcion)
-                .asRequired("La descripcion es requerida")
+                .asRequired("La descripción es requerida")
                 .bind(Periodo::getDescripcion, Periodo::setDescripcion);
+
+        binder.forField(fechaInicio)
+                .asRequired("La fecha de inicio es requerida")
+                .bind(Periodo::getFechaInicio, Periodo::setFechaInicio);
+
+        binder.forField(fechaFin)
+                .asRequired("La fecha de fin es requerida")
+                .bind(Periodo::getFechaFin, Periodo::setFechaFin);
 
         // Configurar acciones de los botones
         saveButton.addClickListener(e -> guardarPeriodo());
         cancelButton.addClickListener(e -> limpiarFormulario());
 
-        // Estilizar botones
-        saveButton.getStyle()
-                .set("background-color", "#007BFF")
-                .set("color", "white")
-                .set("border-radius", "8px");
-
-        cancelButton.getStyle()
-                .set("background-color", "#DC3545")
-                .set("color", "white")
-                .set("border-radius", "8px");
-
         // Controles horizontales en una sola línea
-        HorizontalLayout formLayout = new HorizontalLayout(nombre, descripcion, saveButton, cancelButton);
+        HorizontalLayout formLayout = new HorizontalLayout(nombre, descripcion, fechaInicio, fechaFin, saveButton, cancelButton);
         formLayout.setSpacing(true);
         formLayout.setPadding(true);
         formLayout.setWidthFull();
@@ -87,18 +84,12 @@ public class PeriodoView extends VerticalLayout {
         grid.addColumn(Periodo::getId).setHeader("ID").setAutoWidth(true).setFlexGrow(0);
         grid.addColumn(Periodo::getNombre).setHeader("Nombre");
         grid.addColumn(Periodo::getDescripcion).setHeader("Descripción");
+        grid.addColumn(Periodo::getFechaInicio).setHeader("Fecha de Inicio");
+        grid.addColumn(Periodo::getFechaFin).setHeader("Fecha de Fin");
 
         grid.addComponentColumn(periodo -> {
             Button editButton = new Button("Editar", e -> editarPeriodo(periodo));
             Button deleteButton = new Button("Eliminar", e -> eliminarPeriodo(periodo));
-            editButton.getStyle()
-                    .set("background-color", "#17A2B8")
-                    .set("color", "white")
-                    .set("border-radius", "5px");
-            deleteButton.getStyle()
-                    .set("background-color", "#DC3545")
-                    .set("color", "white")
-                    .set("border-radius", "5px");
             HorizontalLayout actions = new HorizontalLayout(editButton, deleteButton);
             actions.setSpacing(true);
             return actions;
@@ -123,8 +114,7 @@ public class PeriodoView extends VerticalLayout {
             if (periodoSeleccionado == null) {
                 periodoSeleccionado = new Periodo();
             }
-            periodoSeleccionado.setNombre(nombre.getValue());
-            periodoSeleccionado.setDescripcion(descripcion.getValue());
+            binder.writeBeanIfValid(periodoSeleccionado);
 
             periodoRepository.save(periodoSeleccionado);
             Notification.show("Periodo guardado exitosamente.");
@@ -147,15 +137,14 @@ public class PeriodoView extends VerticalLayout {
     private void editarPeriodo(Periodo periodo) {
         if (periodo != null) {
             periodoSeleccionado = periodo;
-            nombre.setValue(periodo.getNombre());
-            descripcion.setValue(periodo.getDescripcion());
+            binder.readBean(periodoSeleccionado);
         } else {
             limpiarFormulario();
         }
     }
 
     private boolean validarFormulario() {
-        if (nombre.isEmpty() || descripcion.isEmpty()) {
+        if (nombre.isEmpty() || descripcion.isEmpty() || fechaInicio.isEmpty() || fechaFin.isEmpty()) {
             Notification.show("Por favor, completa todos los campos.");
             return false;
         }
@@ -164,7 +153,6 @@ public class PeriodoView extends VerticalLayout {
 
     private void limpiarFormulario() {
         periodoSeleccionado = null;
-        nombre.clear();
-        descripcion.clear();
+        binder.readBean(new Periodo());
     }
 }

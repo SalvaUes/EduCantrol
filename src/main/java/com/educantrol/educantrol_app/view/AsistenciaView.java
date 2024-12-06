@@ -107,81 +107,85 @@ public class AsistenciaView extends VerticalLayout {
         Dialog dialog = new Dialog();
         dialog.setWidth("800px");
         dialog.setHeight("600px");
-
+    
         H3 titulo = new H3("Registrar Asistencia para el Grupo: " + asistencia.getGrupo().getDescripcion());
         titulo.getStyle().set("text-align", "center");
-
+    
         // Obtener los estudiantes del grupo asociado
         List<Estudiante> estudiantes = estudianteService.findEstudianteAsociadosAlGrupo(asistencia.getGrupo().getIdGrupo());
-
-        // Map para almacenar las asistencias seleccionadas
+    
+        // Obtener detalles de asistencia existentes para este grupo y fecha
+        List<DetalleAsistencia> detallesExistentes = detalleAsistenciaService.findAllByAsistencia(asistencia.getIdAsistencia());
+        Map<Long, Boolean> asistenciaExistenteMap = new HashMap<>();
+        for (DetalleAsistencia detalle : detallesExistentes) {
+            asistenciaExistenteMap.put(detalle.getEstudiante().getidEstudiante(), detalle.getAsistenciaPresente());
+        }
+    
         Map<Estudiante, Boolean> asistenciaMap = new HashMap<>();
-
+    
         // Grid para mostrar los estudiantes
         Grid<Estudiante> estudiantesGrid = new Grid<>(Estudiante.class, false);
         estudiantesGrid.addColumn(Estudiante::getidEstudiante).setHeader("ID").setWidth("70px");
         estudiantesGrid.addColumn(Estudiante::getNombre).setHeader("Nombre").setAutoWidth(true);
         estudiantesGrid.addColumn(Estudiante::getApellido).setHeader("Apellido").setAutoWidth(true);
-
+    
         estudiantesGrid.addComponentColumn(estudiante -> {
             ComboBox<Boolean> asistenciaComboBox = new ComboBox<>();
             asistenciaComboBox.setItems(true, false); // Valores booleanos: Sí y No
             asistenciaComboBox.setItemLabelGenerator(asiste -> asiste ? "Sí" : "No"); // Mostrar etiquetas "Sí" o "No"
-
-            // Establecer "Sí" como valor predeterminado
-            asistenciaComboBox.setValue(true); // Mostrar "Sí" por defecto
-
+    
+            // Obtener valor de asistencia existente o establecer "Sí" como predeterminado
+            Boolean asistenciaActual = asistenciaExistenteMap.getOrDefault(estudiante.getidEstudiante(), true);
+            asistenciaComboBox.setValue(asistenciaActual);
+    
             // Registrar el valor inicial en el mapa
-            asistenciaMap.put(estudiante, true);
-
+            asistenciaMap.put(estudiante, asistenciaActual);
+    
             // Listener para actualizaciones
             asistenciaComboBox.addValueChangeListener(event -> {
                 if (event.getValue() != null) {
                     asistenciaMap.put(estudiante, event.getValue());
                 }
             });
-
+    
             return asistenciaComboBox;
         }).setHeader("Asistencia").setWidth("150px").setTextAlign(ColumnTextAlign.CENTER);
-
-
+    
         // Establecer los estudiantes en el Grid
         estudiantesGrid.setItems(estudiantes);
-
+    
         // Botón para guardar la asistencia
         Button guardarButton = new Button("Guardar Asistencia", event -> {
             List<DetalleAsistencia> detalles = new ArrayList<>();
-
+    
             for (Estudiante estudiante : asistenciaMap.keySet()) {
                 Boolean asiste = asistenciaMap.get(estudiante);
                 if (asiste != null) {
                     DetalleAsistencia detalle = new DetalleAsistencia();
                     detalle.setAsistenciaPresente(asiste); // Asegúrate de que este método esté definido en la clase DetalleAsistencia
                     detalle.setEstudiante(estudiante);
-                    detalle.setAsistencia(asistencia); // Este es redundante y puede eliminarse
+                    detalle.setAsistencia(asistencia); 
                     detalles.add(detalle);
                 }
             }
-
+    
             if (!detalles.isEmpty()) {
-                 detalleAsistenciaService.saveAllByAsistencia(detalles, asistencia.getIdAsistencia());
+                detalleAsistenciaService.saveAllByAsistencia(detalles, asistencia.getIdAsistencia());
                 Notification.show("Asistencia registrada correctamente.");
                 dialog.close();
             } else {
                 Notification.show("Debe marcar la asistencia para al menos un estudiante.");
             }
         });
-
+    
         VerticalLayout layout = new VerticalLayout(titulo, estudiantesGrid, guardarButton);
         layout.setSpacing(true);
         layout.setPadding(true);
-
+    
         dialog.add(layout);
         dialog.open();
     }
-
-
-
+    
 
     private HorizontalLayout crearFormulario() {
         HorizontalLayout formLayout = new HorizontalLayout();
@@ -195,24 +199,31 @@ public class AsistenciaView extends VerticalLayout {
         grid.setItems(asistencias);
     }
     private void guardarAsistencia() {
-        if (fechaPicker.isEmpty()) {
-            Notification.show("Por favor, selecciona una fecha.");
+        if (fechaPicker.isEmpty() || grupoComboBox.isEmpty()) {
+            Notification.show("Por favor, selecciona un grupo y una fecha.");
             return;
         }
-
+    
+        // Crear nueva instancia de asistencia
         Asistencia asistencia = new Asistencia();
         asistencia.setFecha(java.sql.Date.valueOf(fechaPicker.getValue()));
-
-        // Puedes modificar esto para permitir que el usuario seleccione un grupo
-        Grupo grupoSeleccionado = grupoService.findAll().get(0); // Ajustar según implementación
+    
+        // Asignar el grupo seleccionado en el ComboBox
+        Grupo grupoSeleccionado = grupoComboBox.getValue();
+        if (grupoSeleccionado == null) {
+            Notification.show("Por favor, selecciona un grupo válido.");
+            return;
+        }
         asistencia.setGrupo(grupoSeleccionado);
-
+    
+        // Guardar en la base de datos
         asistenciaService.save(asistencia);
-
+    
         Notification.show("Asistencia guardada correctamente.");
         limpiarFormulario();
         actualizarGrid();
     }
+    
 
     private void generarPDFDetalleAsistencia(Asistencia asistencia) {
         // Obtener los detalles de asistencia para la asistencia seleccionada
@@ -248,11 +259,11 @@ public class AsistenciaView extends VerticalLayout {
     private void editarAsistencia(Asistencia asistencia) {
         if (asistencia != null) {
             fechaPicker.setValue(LocalDate.parse(asistencia.getFecha().toString()));
-
-
+            grupoComboBox.setValue(asistencia.getGrupo()); // Seleccionar el grupo actual
             saveButton.setText("Actualizar");
             saveButton.addClickListener(event -> {
                 asistencia.setFecha(Date.valueOf(fechaPicker.getValue()));
+                asistencia.setGrupo(grupoComboBox.getValue());
                 asistenciaService.save(asistencia);
                 Notification.show("Asistencia actualizada correctamente.");
                 limpiarFormulario();
@@ -262,6 +273,7 @@ public class AsistenciaView extends VerticalLayout {
             Notification.show("Selecciona una asistencia para editar.");
         }
     }
+    
 
     private void eliminarAsistencia(Asistencia asistencia) {
         if (asistencia != null) {
