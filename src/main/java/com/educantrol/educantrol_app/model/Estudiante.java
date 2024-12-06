@@ -35,9 +35,10 @@ public class Estudiante {
     @Column(length = 100)
     private String email;
 
-    @Column(name = "foto")
+    @Column(name = "foto", columnDefinition = "BLOB")
     @Lob
     private byte[] foto;
+
 
     public Estudiante() {
     }

@@ -236,12 +236,13 @@ public class EstudianteView extends VerticalLayout {
             // Crear un diálogo de confirmación
             Dialog confirmDialog = new Dialog();
             confirmDialog.setHeaderTitle("Confirmación");
-
+    
             // Mensaje de confirmación
             confirmDialog.add(new Text("¿Está seguro de que desea eliminar al estudiante?"));
-
+    
             // Botones de acción
             Button confirmButton = new Button("Eliminar", e -> {
+                System.out.println("Intentando eliminar estudiante con ID: " + estudiante.getidEstudiante());
                 estudianteService.deleteById(estudiante.getidEstudiante());
                 NotificationUtil.showSuccess("Estudiante eliminado");
                 actualizarLista();
@@ -249,20 +250,21 @@ public class EstudianteView extends VerticalLayout {
                 confirmDialog.close(); // Cerrar el diálogo después de la acción
             });
             confirmButton.getStyle().set("background-color", "#DC3545").set("color", "white"); // Estilo rojo para el botón
-
+    
             Button cancelButton = new Button("Cancelar", e -> confirmDialog.close());
             cancelButton.getStyle().set("background-color", "#6c757d").set("color", "white"); // Estilo gris para cancelar
-
+    
             // Layout para botones
             HorizontalLayout buttons = new HorizontalLayout(confirmButton, cancelButton);
             confirmDialog.add(buttons);
-
+    
             // Abrir el diálogo
             confirmDialog.open();
         } else {
             NotificationUtil.showError("No se pudo eliminar el estudiante. Selección inválida.");
         }
     }
+    
 
     private void limpiarFormulario() {
         estudianteSeleccionado = null;

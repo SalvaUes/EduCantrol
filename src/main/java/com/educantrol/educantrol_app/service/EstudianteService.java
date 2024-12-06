@@ -48,9 +48,10 @@ public class EstudianteService {
     }
 
     // Método para eliminar un estudiante por su ID
-    public void deleteById(Long idEstudiante) {
-        estudianteRepository.deleteById(idEstudiante);
+    public void deleteById(Long id) {
+        estudianteRepository.deleteById(id);
     }
+    
 
     public List<Estudiante> findEstudianteNoAsociadosAlGrupo(long idGrupo) {
         return estudianteRepository.findEstudiantesNoAsociadosAlGrupo(idGrupo);
